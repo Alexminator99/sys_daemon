@@ -1,7 +1,5 @@
 # sys_daemon
 
----
-
 ## Class Excercise
 
 ### Logger
@@ -24,7 +22,7 @@ make clean
 
 ### Run service
 
-Once arhives are generated, we can install the service by following the next steps:
+Once archives are generated, we can install the service by following the next steps:
 
 - Inside file `file_chkc.service` change **path_to_executable** with the directory where the logger is placed
 - Copy `file_chkd.service` inside directory */etc/systemd/system/*:
@@ -78,3 +76,9 @@ start() {
     echo "Service is running..."
 }
 ```
+
+---
+
+### References
+
+This `README.md` is availble in spanish in the this [link](https://www.craft.do/s/N9OfstCH9J4XQS).

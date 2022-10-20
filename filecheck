@@ -1,0 +1,34 @@
+#!/bin/bash
+
+service=file_check.service
+
+start() {
+    echo "Initiating service..."
+    sudo systemctl start ${service}
+    echo "Service is running..."
+}
+
+stop() {
+    echo "Stopping service..."
+    sudo systemctl stop ${service}
+}
+
+status() {
+    sudo echo $(systemctl is-active ${service})
+}
+
+case "$1" in 
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    status)
+       status
+       ;;
+    *)
+       echo "Usages: $0 { start | stop | status}"
+esac
+
+exit 0 

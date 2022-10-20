@@ -1,0 +1,12 @@
+[Unit]
+
+Description="Files monitor service"
+
+[Service]
+
+ExecStart=/home/parallels/Documents/FileLogExcercise/logger
+Type=simple
+
+[Install]
+
+WantedBy=default.target
