@@ -8,7 +8,7 @@
 
 int files_to_process(char *files)
 {
-    printf("Getting files in: %s \n", files);
+    sd_journal_print(LOG_NOTICE,"Getting files in: %s \n", files);
 
     FILE *fp;
     int count = 0;
@@ -33,7 +33,7 @@ int files_to_process(char *files)
     free(line);
     fclose(fp);
 
-    printf("Files to process: %d \n", count);
+    sd_journal_print(LOG_NOTICE, "Files to process: %d \n", count);
 
     return count;
 }
@@ -53,14 +53,14 @@ uid_t user_status(char *file)
     // Obtain user id of a file
     struct stat attr;
     stat(file, &attr);
-    printf("User ID: %d for file %s", attr.st_uid, file);
+    sd_journal_print(LOG_NOTICE,"User ID: %d for file %s", attr.st_uid, file);
     return attr.st_uid;
 }
 
 void init_file_info(pfile file_info, char *files)
 {
     // Initialize file info
-    printf("Initializing file structure info with %s \n", files);
+    sd_journal_print(LOG_NOTICE,"Initializing file structure info with %s \n", files);
     file_info->tot_arch = files_to_process(files);
     file_info->arch = (char **)malloc(file_info->tot_arch * sizeof(char *));
 
@@ -82,7 +82,7 @@ void init_file_info(pfile file_info, char *files)
         file_info->arch[i] = (char *)malloc(sizeof(char) * read);
         if (line[strlen(line) - 1] == '\n')
             line[strlen(line) - 1] = '\0';
-        printf("File Path is %s \n", line);
+        sd_journal_print(LOG_NOTICE,"File Path is %s \n", line);
         strcpy(file_info->arch[i], line);
     }
 
@@ -103,24 +103,24 @@ void init_file_info(pfile file_info, char *files)
     }
 
     // Print file info
-    printf("\n\n");
-    printf("--------------------------------------------------------------\n");
-    printf("|Total files to check: %d                                     |\n", file_info->tot_arch);
-    printf("--------------------------------------------------------------\n");
+    sd_journal_print(LOG_NOTICE,"\n\n");
+    sd_journal_print(LOG_NOTICE,"--------------------------------------------------------------\n");
+    sd_journal_print(LOG_NOTICE,"|Total files to check: %d                                     |\n", file_info->tot_arch);
+    sd_journal_print(LOG_NOTICE,"--------------------------------------------------------------\n");
     for (int i = 0; i < file_info->tot_arch; i++)
     {
-        printf("|File: %-52s  |", file_info->arch[i]);
-        printf("\r\n");
+        sd_journal_print(LOG_NOTICE,"|File: %-52s  |", file_info->arch[i]);
+        sd_journal_print(LOG_NOTICE,"\r\n");
 
         char time[50];
         strftime(time, 50, "%Y-%m-%d %H:%M:%S", localtime(&file_info->time_mod[i]));
 
-        printf("|Last modified time: %s                     |", time);
-        printf("\r\n");
-        printf("|User ID: %.4d                                               |", file_info->user_mod[i]);
-        printf("\r\n");
-        printf("--------------------------------------------------------------");
-        printf("\n");
+        sd_journal_print(LOG_NOTICE,"|Last modified time: %s                     |", time);
+        sd_journal_print(LOG_NOTICE,"\r\n");
+        sd_journal_print(LOG_NOTICE,"|User ID: %.4d                                               |", file_info->user_mod[i]);
+        sd_journal_print(LOG_NOTICE,"\r\n");
+        sd_journal_print(LOG_NOTICE,"--------------------------------------------------------------");
+        sd_journal_print(LOG_NOTICE,"\n");
     }
 }
 
@@ -138,22 +138,23 @@ void chk_files(pfile file_info)
             files_were_modified = 1;
 
             // If file was modified, journal file was modified plus user id
-            printf("MESSAGE_ID=52fb62f99e2c49d89cfbf9d6de5e3555\n");
-            printf("File %.23s was modified by user with ID: %d", file_info->arch[i], file_info->user_mod[i]);
-            printf("\n");
-            printf( "---------------------------------------------");
-            printf("\n");
+            sd_journal_print(LOG_NOTICE,"MESSAGE_ID=52fb62f99e2c49d89cfbf9d6de5e3555\n");
+            sd_journal_print(LOG_NOTICE,"File %.23s was modified by user with ID: %d", file_info->arch[i], file_info->user_mod[i]);
+            sd_journal_print(LOG_NOTICE,"\n");
+            sd_journal_print(LOG_NOTICE, "---------------------------------------------");
+            sd_journal_print(LOG_NOTICE,"\n");
         }
     }
 
     if (files_were_modified == 0)
     {
-        printf("\n\n");
-        printf("----------------------------------");
-        printf("\n");
-        printf("|     Files were not modified    |");
-        printf("\n");
-        printf("----------------------------------");
-        printf("\n");
+        sd_journal_print(LOG_NOTICE,"\n\n");
+        sd_journal_print(LOG_NOTICE,"----------------------------------");
+        sd_journal_print(LOG_NOTICE,"\n");
+        sd_journal_print(LOG_NOTICE,"|     Files were not modified    |");
+        sd_journal_print(LOG_NOTICE,"\n");
+        sd_journal_print(LOG_NOTICE,"----------------------------------");
+        sd_journal_print(LOG_NOTICE,"\n");
     }
 }
+
